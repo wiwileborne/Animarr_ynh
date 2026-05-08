@@ -1,0 +1,6 @@
+# YunoHost settings for Animarr
+# This file will be populated during installation
+domain: ""
+path: ""
+port: ""
+is_public: ""

@@ -1,0 +1,48 @@
+# YunoHost manifest for Animarr
+# See https://yunohost.org/packaging_apps for documentation
+
+[id]
+id = "animarr"
+
+[name]
+name = "Animarr"
+
+[description]
+en = "Smart Torznab proxy for Anime metadata resolution"
+fr = "Proxy Torznab intelligent pour la résolution de métadonnées d'Anime"
+
+[version]
+version = "1.2.1~ynh1"
+
+[developer]
+developer = "wiwileborne"
+
+[maintainer]
+maintainer = "wiwileborne"
+
+[license]
+license = "MIT"
+
+[requirements]
+yunohost = ">= 11.0"
+
+[multi_instance]
+multi_instance = true
+
+[services]
+animarr = "systemd"
+
+[arguments.install]
+[arguments.install.domain]
+type = "domain"
+ask = "Select the domain for Animarr"
+
+[arguments.install.path]
+type = "path"
+ask = "Select the path for Animarr"
+default = "/animarr"
+
+[arguments.install.is_public]
+type = "boolean"
+ask = "Is this app public?"
+default = false
