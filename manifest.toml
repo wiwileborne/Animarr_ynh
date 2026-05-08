@@ -1,48 +1,50 @@
-# YunoHost manifest for Animarr
-# See https://yunohost.org/packaging_apps for documentation
+#:schema https://raw.githubusercontent.com/YunoHost/apps/master/schemas/manifest.v2.schema.json
 
-[id]
+packaging_format = 2
+
 id = "animarr"
-
-[name]
 name = "Animarr"
+description.en = "Smart Torznab proxy for Anime metadata resolution"
+description.fr = "Proxy Torznab intelligent pour la résolution de métadonnées d'Anime"
 
-[description]
-en = "Smart Torznab proxy for Anime metadata resolution"
-fr = "Proxy Torznab intelligent pour la résolution de métadonnées d'Anime"
-
-[version]
 version = "1.2.1~ynh1"
+maintainers = ["wiwileborne"]
 
-[developer]
-developer = "wiwileborne"
-
-[maintainer]
-maintainer = "wiwileborne"
-
-[license]
+[upstream]
 license = "MIT"
+code = "https://github.com/wiwileborne/Animarr"
 
-[requirements]
+[integration]
 yunohost = ">= 11.0"
-
-[multi_instance]
+architectures = ["amd64", "arm64"]
 multi_instance = true
 
-[services]
-animarr = "systemd"
+[install]
+    [install.domain]
+    type = "domain"
 
-[arguments.install]
-[arguments.install.domain]
-type = "domain"
-ask = "Select the domain for Animarr"
+    [install.path]
+    type = "path"
+    default = "/animarr"
 
-[arguments.install.path]
-type = "path"
-ask = "Select the path for Animarr"
-default = "/animarr"
+    [install.init_main_permission]
+    type = "group"
+    default = "admins"
 
-[arguments.install.is_public]
-type = "boolean"
-ask = "Is this app public?"
-default = false
+[resources]
+    [resources.system_user]
+    
+    [resources.install_dir]
+
+    [resources.permissions]
+    main.url = "/"
+
+    [resources.ports]
+    main.default = 5000
+
+    [resources.sources.main]
+    # Architecture detection handled by YunoHost
+    amd64.url = "https://github.com/wiwileborne/Animarr/releases/download/v1.2.1/animarr-linux-x64.zip"
+    arm64.url = "https://github.com/wiwileborne/Animarr/releases/download/v1.2.1/animarr-linux-arm64.zip"
+    # The zip contains a 'release' folder
+    in_subdir = "release"

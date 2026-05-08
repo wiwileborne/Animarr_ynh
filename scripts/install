@@ -8,112 +8,55 @@
 source /usr/share/yunohost/helpers
 
 #=================================================
-# CHECK ARCHITECTURE
+# DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
+ynh_script_progression "Setting up source files..."
 
-arch=$(uname -m)
-if [ "$arch" == "x86_64" ]; then
-    pkg_arch="linux-x64"
-elif [ "$arch" == "aarch64" ]; then
-    pkg_arch="linux-arm64"
-else
-    ynh_die "Architecture $arch is not supported by Animarr"
-fi
+# This will download the correct zip based on arch and extract it to $install_dir
+# It also handles moving files from the 'release' subdir if specified in manifest
+ynh_setup_source --dest_dir="$install_dir"
+
+# Set binary as executable
+chmod +x "$install_dir/animarr"
 
 #=================================================
-# DEFINE VARIABLES
+# APP INITIAL CONFIGURATION
 #=================================================
+ynh_script_progression "Adding $app's configuration files..."
 
-app=$YNH_APP_INSTANCE_NAME
-
-domain=$control_domain
-path_url=$control_path
-is_public=$control_is_public
-
-final_path="/opt/yunohost/$app"
+# Define data directory
 data_path="/var/lib/$app"
-
-#=================================================
-# PREPARE SYSTEM
-#=================================================
-
-ynh_print_info "Preparing system for Animarr..."
-
-# Create app user
-ynh_system_user_create "$app" "$final_path"
-
-# Create data directory
 mkdir -p "$data_path"
 chown -R "$app:$app" "$data_path"
-chmod 750 "$data_path"
+
+# Link data directory to the app folder
+ln -s "$data_path" "$install_dir/data"
+
+# Create .env file from example and replace placeholder
+cp "$install_dir/.env.example" "$install_dir/.env"
+sed -i "s/__PORT__/$port/g" "$install_dir/.env"
+
+# Final permissions
+chown -R "$app:$app" "$install_dir"
 
 #=================================================
-# DOWNLOAD AND INSTALL
+# SYSTEM CONFIGURATION
 #=================================================
+ynh_script_progression "Adding system configurations related to $app..."
 
-ynh_print_info "Downloading and extracting Animarr ($pkg_arch)..."
-
-# Get version from manifest
-version=$(ynh_app_manifest_get "$app" "version" | cut -d'~' -f1)
-download_url="https://github.com/wiwileborne/Animarr/releases/download/v$version/animarr-$pkg_arch.zip"
-
-# Download to a temp directory
-tmp_dir=$(mktemp -d)
-ynh_setup_source "$download_url" "$tmp_dir"
-
-# Move files from the 'release' subfolder in the zip to final_path
-mkdir -p "$final_path"
-cp -r "$tmp_dir/release/"* "$final_path/"
-rm -rf "$tmp_dir"
-
-# Set permissions
-chown -R "$app:$app" "$final_path"
-chmod +x "$final_path/animarr"
-
-# Create symlink for data (persists in /var/lib)
-# Check if symlink already exists or remove potential folder
-rm -rf "$final_path/data"
-ln -s "$data_path" "$final_path/data"
-
-#=================================================
-# CONFIGURE PORT
-#=================================================
-
-# Find a free port
-port=$(ynh_find_port 5000)
-ynh_app_setting_set "$app" port "$port"
-
-# Create .env file from example
-cp "$final_path/.env.example" "$final_path/.env"
-ynh_replace_string "__PORT__" "$port" "$final_path/.env"
-
-#=================================================
-# NGINX & SYSTEMD
-#=================================================
-
-ynh_print_info "Configuring Nginx and Systemd..."
-
-# Store settings for configuration files
-ynh_app_setting_set "$app" domain "$domain"
-ynh_app_setting_set "$app" path "$path_url"
-
-# Add systemd config
+# Add Nginx and Systemd configs
+ynh_add_nginx_config
 ynh_add_systemd_config
 
-# Add nginx config
-ynh_add_nginx_config
+#=================================================
+# START SYSTEMD SERVICE
+#=================================================
+ynh_script_progression "Starting $app's systemd service..."
+
+ynh_systemd_action --service="$app" --action="start"
+ynh_systemd_action --service="$app" --action="enable"
 
 #=================================================
-# FINALIZE
+# END OF SCRIPT
 #=================================================
-
-ynh_print_info "Starting service..."
-
-# Enable and start service
-ynh_systemd_action --action=enable --service="$app"
-ynh_systemd_action --action=start --service="$app"
-
-# Reload nginx
-ynh_systemd_action --action=reload --service=nginx
-
-ynh_print_info "Animarr installed successfully!"
+ynh_script_progression "Installation of $app completed"
