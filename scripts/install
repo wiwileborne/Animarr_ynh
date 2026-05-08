@@ -37,28 +37,42 @@ data_path="/var/lib/$app"
 # PREPARE SYSTEM
 #=================================================
 
+ynh_print_info "Preparing system for Animarr..."
+
 # Create app user
 ynh_system_user_create "$app" "$final_path"
 
 # Create data directory
 mkdir -p "$data_path"
 chown -R "$app:$app" "$data_path"
+chmod 750 "$data_path"
 
 #=================================================
 # DOWNLOAD AND INSTALL
 #=================================================
 
-# Get latest version from GitHub
-version="1.2.1" # Hardcoded or fetched
+ynh_print_info "Downloading and extracting Animarr ($pkg_arch)..."
+
+# Get version from manifest
+version=$(ynh_app_manifest_get "$app" "version" | cut -d'~' -f1)
 download_url="https://github.com/wiwileborne/Animarr/releases/download/v$version/animarr-$pkg_arch.zip"
 
-ynh_setup_source "$download_url" "$final_path"
+# Download to a temp directory
+tmp_dir=$(mktemp -d)
+ynh_setup_source "$download_url" "$tmp_dir"
+
+# Move files from the 'release' subfolder in the zip to final_path
+mkdir -p "$final_path"
+cp -r "$tmp_dir/release/"* "$final_path/"
+rm -rf "$tmp_dir"
 
 # Set permissions
 chown -R "$app:$app" "$final_path"
 chmod +x "$final_path/animarr"
 
-# Create symlink for data (so it persists in /var/lib)
+# Create symlink for data (persists in /var/lib)
+# Check if symlink already exists or remove potential folder
+rm -rf "$final_path/data"
 ln -s "$data_path" "$final_path/data"
 
 #=================================================
@@ -69,13 +83,19 @@ ln -s "$data_path" "$final_path/data"
 port=$(ynh_find_port 5000)
 ynh_app_setting_set "$app" port "$port"
 
-# Create .env file
-ynh_replace_file "$final_path/.env.example" "$final_path/.env"
+# Create .env file from example
+cp "$final_path/.env.example" "$final_path/.env"
 ynh_replace_string "__PORT__" "$port" "$final_path/.env"
 
 #=================================================
 # NGINX & SYSTEMD
 #=================================================
+
+ynh_print_info "Configuring Nginx and Systemd..."
+
+# Store settings for configuration files
+ynh_app_setting_set "$app" domain "$domain"
+ynh_app_setting_set "$app" path "$path_url"
 
 # Add systemd config
 ynh_add_systemd_config
@@ -87,9 +107,13 @@ ynh_add_nginx_config
 # FINALIZE
 #=================================================
 
-# Start service
-systemctl enable "$app"
-systemctl start "$app"
+ynh_print_info "Starting service..."
+
+# Enable and start service
+ynh_systemd_action --action=enable --service="$app"
+ynh_systemd_action --action=start --service="$app"
 
 # Reload nginx
 ynh_systemd_action --action=reload --service=nginx
+
+ynh_print_info "Animarr installed successfully!"
