@@ -66,16 +66,17 @@ ynh_config_add_nginx
 
 # Setup systemd service
 ynh_config_add_systemd
+yunohost service add "$app" --description="Smart Torznab proxy for Anime metadata resolution"
 
 #=================================================
 # START SYSTEMD SERVICE
 #=================================================
-ynh_script_progression "Starting $app's"
-# Start the service
-ynh_service_action --service="$app" --action="start"
+ynh_script_progression "Starting $app's systemd service..."
 
-# Enable the service for boot
-ynh_service_action --service="$app" --action="enable"
+# Start the service
+ynh_systemctl --service="$app" --action="start"
+# Enable is usually handled by YunoHost or can be done via systemctl
+systemctl enable "$app" --quiet
 
 #=================================================
 # END OF SCRIPT
