@@ -16,6 +16,10 @@ ynh_script_progression "Setting up source files..."
 # It also handles moving files from the 'release' subdir if specified in manifest
 ynh_setup_source --dest_dir="$install_dir"
 
+# Debug: check extracted files
+ynh_print_info "Checking extracted files in $install_dir..."
+ls -la "$install_dir"
+
 # Set binary as executable
 chmod +x "$install_dir/animarr"
 
