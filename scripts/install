@@ -37,7 +37,20 @@ chown -R "$app:$app" "$data_path"
 ln -s "$data_path" "$install_dir/data"
 
 # Create .env file from example and replace placeholder
-cp "$install_dir/.env.example" "$install_dir/.env"
+if [ -f "$install_dir/.env.example" ]; then
+    cp "$install_dir/.env.example" "$install_dir/.env"
+else
+    # Fallback if .env.example is missing (manual creation)
+    cat <<EOF > "$install_dir/.env"
+# Animarr Configuration
+PORT=__PORT__
+ADMIN_USER=admin
+ADMIN_PASSWORD=
+PROWLARR_URL=http://localhost:9696
+PROWLARR_API_KEY=
+EOF
+fi
+
 sed -i "s/__PORT__/$port/g" "$install_dir/.env"
 
 # Final permissions
