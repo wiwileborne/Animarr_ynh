@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Load YunoHost helper
+source /usr/share/yunohost/helpers
+
+app=$YNH_APP_INSTANCE_NAME
+
+# Remove nginx config
+ynh_remove_nginx_config
+
+# Remove systemd config
+ynh_remove_systemd_config
+
+# Delete app user and files
+ynh_system_user_delete "$app"
+
+# Remove app directory
+rm -rf "/opt/yunohost/$app"
+
+# Note: /var/lib/$app (data) is usually kept unless specified otherwise 
+# but for a clean removal:
+# rm -rf "/var/lib/$app"

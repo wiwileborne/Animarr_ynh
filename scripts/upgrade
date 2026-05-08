@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Load YunoHost helper
+source /usr/share/yunohost/helpers
+
+app=$YNH_APP_INSTANCE_NAME
+
+# Re-run install steps for code only
+# (This is a simplified upgrade script)
+/bin/bash ./install

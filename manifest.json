@@ -1,0 +1,37 @@
+{
+    "id": "animarr",
+    "name": "Animarr",
+    "description": "Smart Torznab proxy for Anime metadata resolution",
+    "version": "1.2.1",
+    "developer": "wiwileborne",
+    "maintainer": "wiwileborne",
+    "license": "MIT",
+    "requirements": {
+        "yunohost": ">= 11.0"
+    },
+    "multi_instance": true,
+    "services": [
+        "animarr"
+    ],
+    "arguments": {
+        "install": [
+            {
+                "name": "domain",
+                "type": "domain",
+                "ask": "Select the domain for Animarr"
+            },
+            {
+                "name": "path",
+                "type": "path",
+                "ask": "Select the path for Animarr",
+                "default": "/animarr"
+            },
+            {
+                "name": "is_public",
+                "type": "boolean",
+                "ask": "Is this app public?",
+                "default": false
+            }
+        ]
+    }
+}

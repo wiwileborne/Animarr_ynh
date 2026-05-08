@@ -1,0 +1,16 @@
+[Unit]
+Description=Animarr - Smart Torznab Proxy
+After=network.target
+
+[Service]
+Type=simple
+User=__APP__
+Group=__APP__
+WorkingDirectory=/opt/yunohost/__APP__
+ExecStart=/opt/yunohost/__APP__/animarr
+Restart=always
+RestartSec=10
+Environment=NODE_ENV=production
+
+[Install]
+WantedBy=multi-user.target

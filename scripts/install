@@ -1,0 +1,95 @@
+#!/bin/bash
+
+#=================================================
+# COMMON_SCRIPT
+#=================================================
+
+# Load YunoHost helper
+source /usr/share/yunohost/helpers
+
+#=================================================
+# CHECK ARCHITECTURE
+#=================================================
+
+arch=$(uname -m)
+if [ "$arch" == "x86_64" ]; then
+    pkg_arch="linux-x64"
+elif [ "$arch" == "aarch64" ]; then
+    pkg_arch="linux-arm64"
+else
+    ynh_die "Architecture $arch is not supported by Animarr"
+fi
+
+#=================================================
+# DEFINE VARIABLES
+#=================================================
+
+app=$YNH_APP_INSTANCE_NAME
+
+domain=$control_domain
+path_url=$control_path
+is_public=$control_is_public
+
+final_path="/opt/yunohost/$app"
+data_path="/var/lib/$app"
+
+#=================================================
+# PREPARE SYSTEM
+#=================================================
+
+# Create app user
+ynh_system_user_create "$app" "$final_path"
+
+# Create data directory
+mkdir -p "$data_path"
+chown -R "$app:$app" "$data_path"
+
+#=================================================
+# DOWNLOAD AND INSTALL
+#=================================================
+
+# Get latest version from GitHub
+version="1.2.1" # Hardcoded or fetched
+download_url="https://github.com/wiwileborne/Animarr/releases/download/v$version/animarr-$pkg_arch.zip"
+
+ynh_setup_source "$download_url" "$final_path"
+
+# Set permissions
+chown -R "$app:$app" "$final_path"
+chmod +x "$final_path/animarr"
+
+# Create symlink for data (so it persists in /var/lib)
+ln -s "$data_path" "$final_path/data"
+
+#=================================================
+# CONFIGURE PORT
+#=================================================
+
+# Find a free port
+port=$(ynh_find_port 5000)
+ynh_app_setting_set "$app" port "$port"
+
+# Create .env file
+ynh_replace_file "$final_path/.env.example" "$final_path/.env"
+ynh_replace_string "__PORT__" "$port" "$final_path/.env"
+
+#=================================================
+# NGINX & SYSTEMD
+#=================================================
+
+# Add systemd config
+ynh_add_systemd_config
+
+# Add nginx config
+ynh_add_nginx_config
+
+#=================================================
+# FINALIZE
+#=================================================
+
+# Start service
+systemctl enable "$app"
+systemctl start "$app"
+
+# Reload nginx
+ynh_systemd_action --action=reload --service=nginx
