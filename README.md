@@ -16,7 +16,6 @@ Animarr is a smart Torznab proxy for Anime metadata resolution.
 ## Documentation and resources
 
 - Upstream app code repository: [https://github.com/wiwileborne/Animarr](https://github.com/wiwileborne/Animarr)
-- YunoHost documentation for this app: [https://yunohost.org/app_animarr](https://yunohost.org/app_animarr)
 - Report a bug: [https://github.com/wiwileborne/Animarr_ynh/issues](https://github.com/wiwileborne/Animarr_ynh/issues)
 
 ## Maintainers

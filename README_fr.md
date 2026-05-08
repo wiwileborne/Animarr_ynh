@@ -16,7 +16,6 @@ Animarr résout le décalage entre les noms des releases (scène) et les fournis
 ## Documentation et ressources
 
 - Dépôt de code de l'application : [https://github.com/wiwileborne/Animarr](https://github.com/wiwileborne/Animarr)
-- Documentation YunoHost pour cette application : [https://yunohost.org/app_animarr](https://yunohost.org/app_animarr)
 - Signaler un bug : [https://github.com/wiwileborne/Animarr_ynh/issues](https://github.com/wiwileborne/Animarr_ynh/issues)
 
 ## Mainteneurs
