@@ -70,10 +70,12 @@ ynh_config_add_systemd
 #=================================================
 # START SYSTEMD SERVICE
 #=================================================
-ynh_script_progression "Starting $app's systemd service..."
+ynh_script_progression "Starting $app's"
+# Start the service
+ynh_service_action --service="$app" --action="start"
 
-ynh_systemd_action --service="$app" --action="start"
-ynh_systemd_action --service="$app" --action="enable"
+# Enable the service for boot
+ynh_service_action --service="$app" --action="enable"
 
 #=================================================
 # END OF SCRIPT
