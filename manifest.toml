@@ -7,7 +7,7 @@ name = "Animarr"
 description.en = "Smart Torznab proxy for Anime metadata resolution"
 description.fr = "Proxy Torznab intelligent pour la résolution de métadonnées d'Anime"
 
-version = "1.2.4~ynh1"
+version = "1.2.5~ynh1"
 maintainers = ["wiwileborne"]
 
 [upstream]
@@ -50,9 +50,9 @@ ram.runtime = "100M"
 
     [resources.sources.main]
     # Architecture detection handled by YunoHost
-    amd64.url = "https://github.com/wiwileborne/Animarr/releases/download/v1.2.4/animarr-linux-x64.zip"
-    amd64.sha256 = "3841b83580afe4441459728f91dbde01334cb35b8c7db689db7b63726b055422"
-    arm64.url = "https://github.com/wiwileborne/Animarr/releases/download/v1.2.4/animarr-linux-arm64.zip"
-    arm64.sha256 = "ea578051a967cf85c3899c2c1e25240a34e747588fc5c670fe6d142a2c8aedda"
+    amd64.url = "https://github.com/wiwileborne/Animarr/releases/download/v1.2.5/animarr-linux-x64.zip"
+    amd64.sha256 = "467ec7536ece23de263bd6e4a1cb0be0450bb8f1a86b1793fe2a2072ffbd2a05"
+    arm64.url = "https://github.com/wiwileborne/Animarr/releases/download/v1.2.5/animarr-linux-arm64.zip"
+    arm64.sha256 = "4d3491bb0af14332e9e440bd349a9beec1e7a9d23ef4abe4a122125af1389277"
     # The zip contains a 'release' folder, so we skip 1 level
     in_subdir = 1
