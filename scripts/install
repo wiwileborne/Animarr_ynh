@@ -61,9 +61,11 @@ chown -R "$app:$app" "$install_dir"
 #=================================================
 ynh_script_progression "Adding system configurations related to $app..."
 
-# Add Nginx and Systemd configs
-ynh_add_nginx_config
-ynh_add_systemd_config
+# Setup Nginx configuration
+ynh_config_add_nginx
+
+# Setup systemd service
+ynh_config_add_systemd
 
 #=================================================
 # START SYSTEMD SERVICE

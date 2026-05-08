@@ -6,17 +6,13 @@ source /usr/share/yunohost/helpers
 app=$YNH_APP_INSTANCE_NAME
 
 # Remove nginx config
-ynh_remove_nginx_config
+ynh_config_remove_nginx
 
 # Remove systemd config
-ynh_remove_systemd_config
+ynh_config_remove_systemd
 
-# Delete app user and files
-ynh_system_user_delete "$app"
+# Remove app directory (using standard path)
+ynh_secure_remove "/var/www/$app"
 
-# Remove app directory
-rm -rf "/opt/yunohost/$app"
-
-# Note: /var/lib/$app (data) is usually kept unless specified otherwise 
-# but for a clean removal:
-# rm -rf "/var/lib/$app"
+# Note: We keep /var/lib/$app (data) as per YunoHost policy
+# Unless the user explicitly wants to purge everything.
