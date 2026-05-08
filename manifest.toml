@@ -54,5 +54,5 @@ ram.runtime = "100M"
     amd64.sha256 = "a7cddfe5150896b061fb00806adbe9d501a73bf3aac48354fda3669dbbf80e49"
     arm64.url = "https://github.com/wiwileborne/Animarr/releases/download/v1.2.1/animarr-linux-arm64.zip"
     arm64.sha256 = "8a4228c1db8ef8c6e9c366c63e29b3e8d6428c51a53360312c7e82d888a2286e"
-    # The zip contains a 'release' folder
-    in_subdir = "release"
+    # The zip contains a 'release' folder, so we skip 1 level
+    in_subdir = 1
